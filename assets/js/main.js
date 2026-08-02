@@ -6,14 +6,16 @@
   "use strict";
 
   /* ---- EDIT ME ---------------------------------------------------------
-     Set your Formspree (or Getform) endpoint below to make the contact
-     form send email. Until then the form falls back to a mailto: link.
+     Set your Formspree (or Getform) endpoint below to switch the contact
+     form on. While this is empty the form stays disabled and points people
+     at LinkedIn instead — it deliberately does NOT fall back to a mailto:
+     link, so no email address is exposed anywhere on the site.
      1. Sign up free at https://formspree.io
      2. Create a form, copy the endpoint (looks like https://formspree.io/f/xabcdefg)
-     3. Paste it between the quotes.
+     3. Paste it between the quotes below. Nothing else needs changing.
   ---------------------------------------------------------------------- */
   var FORM_ENDPOINT = "";
-  var EMAIL = "jamesbaierski@gmail.com";
+  var LINKEDIN = "https://www.linkedin.com/in/jbaierski/";
 
   /* ---------------------------------------------------------- nav state -- */
   var nav = document.querySelector(".nav");
@@ -75,19 +77,6 @@
     revealables.forEach(function (el) { io.observe(el); });
   }
 
-  /* -------------------------------------------------------- copy e-mail -- */
-  var copyBtn = document.querySelector("[data-copy-email]");
-  if (copyBtn && navigator.clipboard) {
-    copyBtn.addEventListener("click", function () {
-      navigator.clipboard.writeText(EMAIL).then(function () {
-        var label = copyBtn.querySelector("[data-copy-label]") || copyBtn;
-        var original = label.textContent;
-        label.textContent = "Copied to clipboard";
-        setTimeout(function () { label.textContent = original; }, 1800);
-      });
-    });
-  }
-
   /* ------------------------------------------------------- contact form -- */
   var form = document.querySelector("#contact-form");
   if (form) {
@@ -99,24 +88,27 @@
       status.className = "form__status " + (ok ? "is-ok" : "is-err");
     };
 
-    if (FORM_ENDPOINT) form.setAttribute("action", FORM_ENDPOINT);
+    // No endpoint configured yet: disable the form outright rather than
+    // falling back to a mailto: link, and send people to LinkedIn instead.
+    if (!FORM_ENDPOINT) {
+      form.setAttribute("data-inactive", "true");
+      Array.prototype.forEach.call(form.querySelectorAll("input, textarea, button"), function (el) {
+        el.disabled = true;
+      });
+      var note = form.querySelector(".form__note");
+      if (note) {
+        note.innerHTML = 'The contact form isn\'t live yet — reach me on ' +
+          '<a href="' + LINKEDIN + '" target="_blank" rel="noopener">LinkedIn</a> in the meantime.';
+      }
+      return;
+    }
+
+    form.setAttribute("action", FORM_ENDPOINT);
 
     form.addEventListener("submit", function (e) {
       // Honeypot — silently drop bot submissions.
       var hp = form.querySelector('input[name="_gotcha"]');
       if (hp && hp.value) { e.preventDefault(); return; }
-
-      if (!FORM_ENDPOINT) {
-        e.preventDefault();
-        var data = new FormData(form);
-        var subject = encodeURIComponent("Portfolio enquiry — " + (data.get("name") || ""));
-        var body = encodeURIComponent(
-          (data.get("message") || "") + "\n\n— " + (data.get("name") || "") + "\n" + (data.get("email") || "")
-        );
-        window.location.href = "mailto:" + EMAIL + "?subject=" + subject + "&body=" + body;
-        say("Opening your email app…", true);
-        return;
-      }
 
       e.preventDefault();
       var btn = form.querySelector('button[type="submit"]');
@@ -133,10 +125,10 @@
           form.reset();
           say("Thanks — your message is on its way. I'll reply within a day or two.", true);
         } else {
-          say("Something went wrong. Email me directly at " + EMAIL + ".", false);
+          say("Something went wrong. Please reach me on LinkedIn instead.", false);
         }
       }).catch(function () {
-        say("Network error. Email me directly at " + EMAIL + ".", false);
+        say("Network error. Please reach me on LinkedIn instead.", false);
       }).finally(function () {
         if (btn) { btn.disabled = false; btn.textContent = btn.dataset.label || "Send message"; }
       });
