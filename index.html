@@ -1,531 +1,361 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Professional Portfolio</title>
-    <style>
-        /* Base styles */
-        :root {
-            --primary-color: #2a6496;
-            --secondary-color: #61dafb;
-            --dark-color: #333;
-            --light-color: #f4f4f4;
-            --success-color: #28a745;
-            --error-color: #dc3545;
-            --box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            --transition: all 0.3s ease;
-        }
-        
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: var(--dark-color);
-            background-color: var(--light-color);
-        }
-        
-        a {
-            text-decoration: none;
-            color: var(--primary-color);
-            transition: var(--transition);
-        }
-        
-        a:hover {
-            color: var(--secondary-color);
-        }
-        
-        ul {
-            list-style: none;
-        }
-        
-        img {
-            width: 100%;
-            height: auto;
-        }
-        
-        /* Utility classes */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-        
-        .btn {
-            display: inline-block;
-            background-color: var(--primary-color);
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: var(--transition);
-            text-transform: uppercase;
-            font-weight: bold;
-            font-size: 0.9rem;
-            margin-top: 1rem;
-        }
-        
-        .btn:hover {
-            background-color: var(--secondary-color);
-            color: var(--dark-color);
-        }
-        
-        .text-center {
-            text-align: center;
-        }
-        
-        .section-title {
-            font-size: 2rem;
-            padding-bottom: 1rem;
-            text-align: center;
-            position: relative;
-            margin-bottom: 2rem;
-        }
-        
-        .section-title:after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 3px;
-            background-color: var(--primary-color);
-        }
-        
-        /* Header */
-        header {
-            background-color: var(--dark-color);
-            padding: 1.5rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: var(--box-shadow);
-        }
-        
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .logo {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: var(--secondary-color);
-        }
-        
-        .nav-menu {
-            display: flex;
-        }
-        
-        .nav-menu li {
-            padding: 0 1rem;
-        }
-        
-        .nav-menu a {
-            color: white;
-            font-weight: 500;
-        }
-        
-        .nav-menu a:hover {
-            color: var(--secondary-color);
-        }
-        
-        /* Hero section */
-        #hero {
-            height: 80vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 2rem;
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('/api/placeholder/1200/800') no-repeat center center/cover;
-            color: white;
-        }
-        
-        #hero h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-        
-        #hero p {
-            font-size: 1.5rem;
-            max-width: 600px;
-            margin-bottom: 2rem;
-        }
-        
-        /* About section */
-        #about {
-            padding: 5rem 0;
-        }
-        
-        .about-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            align-items: center;
-        }
-        
-        .about-image {
-            overflow: hidden;
-            border-radius: 10px;
-            box-shadow: var(--box-shadow);
-        }
-        
-        .about-text h3 {
-            font-size: 1.8rem;
-            margin-bottom: 1rem;
-        }
-        
-        .skills {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-        
-        .skill {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-        }
-        
-        /* Projects section */
-        #projects {
-            padding: 5rem 0;
-            background-color: var(--dark-color);
-            color: white;
-        }
-        
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-        
-        .project-card {
-            background-color: white;
-            color: var(--dark-color);
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: var(--box-shadow);
-            transition: var(--transition);
-        }
-        
-        .project-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-        }
-        
-        .project-img {
-            height: 200px;
-            overflow: hidden;
-        }
-        
-        .project-content {
-            padding: 1.5rem;
-        }
-        
-        .project-content h3 {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .project-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin: 1rem 0;
-        }
-        
-        .project-tag {
-            background-color: var(--light-color);
-            padding: 0.3rem 0.6rem;
-            border-radius: 15px;
-            font-size: 0.8rem;
-        }
-        
-        /* Contact section */
-        #contact {
-            padding: 5rem 0;
-        }
-        
-        .contact-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-        
-        .contact-info {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-        
-        .contact-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .contact-item i {
-            color: var(--primary-color);
-            font-size: 1.5rem;
-        }
-        
-        .contact-form {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-        
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-        
-        .form-group label {
-            font-weight: bold;
-        }
-        
-        .form-group input,
-        .form-group textarea {
-            padding: 0.8rem;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-family: inherit;
-        }
-        
-        .form-group textarea {
-            resize: vertical;
-            min-height: 150px;
-        }
-        
-        /* Footer */
-        footer {
-            background-color: var(--dark-color);
-            color: white;
-            padding: 2rem 0;
-            text-align: center;
-        }
-        
-        .social-icons {
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            margin: 1.5rem 0;
-        }
-        
-        .social-icon {
-            color: white;
-            font-size: 1.5rem;
-            transition: var(--transition);
-        }
-        
-        .social-icon:hover {
-            color: var(--secondary-color);
-        }
-        
-        /* Responsive design */
-        @media (max-width: 768px) {
-            .about-content {
-                grid-template-columns: 1fr;
-            }
-            
-            .nav-menu {
-                display: none;
-            }
-            
-            #hero h1 {
-                font-size: 2.5rem;
-            }
-            
-            #hero p {
-                font-size: 1.2rem;
-            }
-        }
-    </style>
-    <!-- Font Awesome for icons -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>James Baierski — Data &amp; Automation Engineer</title>
+<meta name="description" content="Data and automation engineer building Python and SQL systems that remove manual work from legal and back-office operations. Pipelines, reporting platforms, and AI document workflows.">
+<meta name="author" content="James Baierski">
+<link rel="canonical" href="https://jamesbaierski.github.io/">
+
+<!-- Open Graph / social -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="James Baierski — Data &amp; Automation Engineer">
+<meta property="og:description" content="Python and SQL automation for legal operations: document generation at scale, ETL pipelines, self-serve reporting, and RAG applications.">
+<meta property="og:url" content="https://jamesbaierski.github.io/">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23080b11'/><text x='50' y='68' font-family='monospace' font-size='54' font-weight='bold' fill='%234cc2ff' text-anchor='middle'>JB</text></svg>">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "James Baierski",
+  "url": "https://jamesbaierski.github.io/",
+  "sameAs": [
+    "https://www.linkedin.com/in/jbaierski/",
+    "https://github.com/JamesBaierski"
+  ],
+  "email": "mailto:jamesbaierski@gmail.com",
+  "telephone": "+1-760-803-0266",
+  "jobTitle": "Data & Automation Engineer",
+  "address": { "@type": "PostalAddress", "addressLocality": "Escondido", "addressRegion": "CA", "addressCountry": "US" },
+  "alumniOf": [
+    { "@type": "CollegeOrUniversity", "name": "California State University, Northridge" },
+    { "@type": "CollegeOrUniversity", "name": "Palomar College" }
+  ],
+  "knowsAbout": ["Python", "SQL", "ETL", "Apache Airflow", "Snowflake", "Power BI", "Retrieval-Augmented Generation", "Legal technology"]
+}
+</script>
 </head>
 <body>
-    <!-- Header -->
-    <header>
-        <div class="container">
-            <nav>
-                <div class="logo">Portfolio</div>
-                <ul class="nav-menu">
-                    <li><a href="#hero">Home</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#projects">Projects</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                </ul>
-            </nav>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="nav">
+  <div class="wrap nav__inner">
+    <a class="nav__brand" href="#top"><span class="dot" aria-hidden="true"></span>James Baierski</a>
+    <button class="nav__toggle" type="button" aria-label="Toggle navigation" aria-expanded="false">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <nav class="nav__links" aria-label="Primary">
+      <a href="#work">Work</a>
+      <a href="#experience">Experience</a>
+      <a href="#skills">Skills</a>
+      <a href="#contact">Contact</a>
+      <a class="btn btn--sm btn--primary" href="assets/files/James_Baierski_Resume.pdf" download>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        Résumé
+      </a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<a id="top"></a>
+
+<!-- ============================================================ HERO -->
+<section class="hero">
+  <div class="wrap">
+    <span class="hero__status"><span class="pulse" aria-hidden="true"></span> Open to data &amp; automation engineering roles</span>
+    <h1>I turn manual operations work into <span class="accent">systems that run themselves</span>.</h1>
+    <p class="hero__role">Data &amp; Automation Engineer · Python · SQL · Legal Tech</p>
+    <p class="hero__pitch">
+      Two years inside law firm operations building the pipelines, databases, and document
+      automation that replaced spreadsheets and copy-paste. I take the process nobody wants
+      to do by hand, and hand back something that runs on a schedule.
+    </p>
+    <div class="hero__cta">
+      <a class="btn btn--primary" href="#work">
+        See the work
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <a class="btn" href="assets/files/James_Baierski_Resume.pdf" download>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        Download résumé
+      </a>
+    </div>
+    <p class="hero__meta">
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg> Escondido, CA</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg> jamesbaierski@gmail.com</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.8a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.8 2Z"/></svg> (760) 803-0266</span>
+    </p>
+  </div>
+</section>
+
+<!-- ========================================================= METRICS -->
+<section class="section section--tight" aria-label="Highlights">
+  <div class="wrap">
+    <div class="metrics reveal">
+      <div class="metric">
+        <div class="metric__value">100s<span class="unit">/min</span></div>
+        <p class="metric__label">Legal documents generated automatically — the same process previously produced ~50 per week by hand.</p>
+      </div>
+      <div class="metric">
+        <div class="metric__value">2<span class="unit"> yrs</span></div>
+        <p class="metric__label">Inside law firm operations as developer, DBA, and analyst.</p>
+      </div>
+      <div class="metric">
+        <div class="metric__value">Firm<span class="unit">-wide</span></div>
+        <p class="metric__label">Python automation refactored and hardened across departments.</p>
+      </div>
+      <div class="metric">
+        <div class="metric__value">Self<span class="unit">-serve</span></div>
+        <p class="metric__label">No-code reporting so admin and compliance staff query data without engineering.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ WORK -->
+<section class="section" id="work">
+  <div class="wrap">
+    <div class="section__head reveal">
+      <div>
+        <p class="eyebrow">Selected work</p>
+        <h2>Three systems, built end to end</h2>
+      </div>
+      <p class="lede" style="margin:0;max-width:38ch">Each write-up covers the problem, how it was built, and what changed afterwards.</p>
+    </div>
+
+    <div class="cards">
+      <a class="card card--link reveal" href="projects/document-automation.html">
+        <p class="card__tag">Automation · Python</p>
+        <h3>Legal Document Generation Engine</h3>
+        <p>A manual drafting process producing roughly 50 documents a week, rebuilt as a templated pipeline that produces hundreds per minute with consistent formatting and audit-ready output.</p>
+        <div class="card__foot">
+          <div class="chips">
+            <span class="chip">Python</span><span class="chip">SQL</span><span class="chip">docx templating</span>
+          </div>
+          <span class="card__more">Read case study <span class="arrow">→</span></span>
         </div>
-    </header>
+      </a>
 
-    <!-- Hero Section -->
-    <section id="hero">
-        <h1>Your Name</h1>
-        <p>Web Developer & Designer</p>
-        <a href="#projects" class="btn">View My Work</a>
-    </section>
-
-    <!-- About Section -->
-    <section id="about" class="container">
-        <h2 class="section-title">About Me</h2>
-        <div class="about-content">
-            <div class="about-image">
-                <img src="/api/placeholder/600/600" alt="Profile Image">
-            </div>
-            <div class="about-text">
-                <h3>Who I am</h3>
-                <p>Hello! I'm a passionate web developer with a strong background in creating modern, responsive websites and applications. I enjoy solving complex problems and turning ideas into reality through elegant code.</p>
-                <p>With over X years of experience in the field, I've worked on a variety of projects ranging from small business websites to complex enterprise applications.</p>
-                <h3>My Skills</h3>
-                <div class="skills">
-                    <span class="skill">HTML5</span>
-                    <span class="skill">CSS3</span>
-                    <span class="skill">JavaScript</span>
-                    <span class="skill">React</span>
-                    <span class="skill">Node.js</span>
-                    <span class="skill">MongoDB</span>
-                    <span class="skill">Git</span>
-                    <span class="skill">Responsive Design</span>
-                </div>
-            </div>
+      <a class="card card--link reveal" href="projects/reporting-platform.html">
+        <p class="card__tag">Data engineering</p>
+        <h3>Unified Reporting Platform</h3>
+        <p>End-to-end pipelines pulling siloed internal systems into one reporting layer, plus no-code tooling that let non-technical staff answer their own questions.</p>
+        <div class="card__foot">
+          <div class="chips">
+            <span class="chip">Airflow</span><span class="chip">Snowflake</span><span class="chip">Power BI</span>
+          </div>
+          <span class="card__more">Read case study <span class="arrow">→</span></span>
         </div>
-    </section>
+      </a>
 
-    <!-- Projects Section -->
-    <section id="projects">
-        <div class="container">
-            <h2 class="section-title">My Projects</h2>
-            <div class="projects-grid">
-                <!-- Project 1 -->
-                <div class="project-card">
-                    <div class="project-img">
-                        <img src="/api/placeholder/600/400" alt="Project 1">
-                    </div>
-                    <div class="project-content">
-                        <h3>E-commerce Website</h3>
-                        <p>A fully responsive e-commerce platform with shopping cart functionality and payment integration.</p>
-                        <div class="project-tags">
-                            <span class="project-tag">React</span>
-                            <span class="project-tag">Node.js</span>
-                            <span class="project-tag">MongoDB</span>
-                        </div>
-                        <a href="#" class="btn">View Project</a>
-                    </div>
-                </div>
-                
-                <!-- Project 2 -->
-                <div class="project-card">
-                    <div class="project-img">
-                        <img src="/api/placeholder/600/400" alt="Project 2">
-                    </div>
-                    <div class="project-content">
-                        <h3>Task Management App</h3>
-                        <p>A task management application with drag-and-drop functionality, user authentication, and real-time updates.</p>
-                        <div class="project-tags">
-                            <span class="project-tag">JavaScript</span>
-                            <span class="project-tag">Firebase</span>
-                            <span class="project-tag">CSS Grid</span>
-                        </div>
-                        <a href="#" class="btn">View Project</a>
-                    </div>
-                </div>
-                
-                <!-- Project 3 -->
-                <div class="project-card">
-                    <div class="project-img">
-                        <img src="/api/placeholder/600/400" alt="Project 3">
-                    </div>
-                    <div class="project-content">
-                        <h3>Portfolio Website</h3>
-                        <p>A clean and modern portfolio website to showcase my work and skills.</p>
-                        <div class="project-tags">
-                            <span class="project-tag">HTML5</span>
-                            <span class="project-tag">CSS3</span>
-                            <span class="project-tag">JavaScript</span>
-                        </div>
-                        <a href="#" class="btn">View Project</a>
-                    </div>
-                </div>
-            </div>
+      <a class="card card--link reveal" href="projects/legal-rag-assistant.html">
+        <p class="card__tag">Applied AI</p>
+        <h3>Legal Knowledge Assistant (RAG)</h3>
+        <p>A retrieval-augmented assistant over firm documents: vector search to find the passages that matter, an LLM to summarise them, and citations back to the source so answers stay checkable.</p>
+        <div class="card__foot">
+          <div class="chips">
+            <span class="chip">Python</span><span class="chip">Vector search</span><span class="chip">LLM</span>
+          </div>
+          <span class="card__more">Read case study <span class="arrow">→</span></span>
         </div>
-    </section>
+      </a>
+    </div>
+  </div>
+</section>
 
-    <!-- Contact Section -->
-    <section id="contact" class="container">
-        <h2 class="section-title">Get In Touch</h2>
-        <div class="contact-content">
-            <div class="contact-info">
-                <div class="contact-item">
-                    <i class="fas fa-envelope"></i>
-                    <p>youremail@example.com</p>
-                </div>
-                <div class="contact-item">
-                    <i class="fas fa-phone"></i>
-                    <p>+1 (123) 456-7890</p>
-                </div>
-                <div class="contact-item">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <p>Your Location, City, Country</p>
-                </div>
-            </div>
-            <form class="contact-form">
-                <div class="form-group">
-                    <label for="name">Name</label>
-                    <input type="text" id="name" name="name" required>
-                </div>
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="message">Message</label>
-                    <textarea id="message" name="message" required></textarea>
-                </div>
-                <button type="submit" class="btn">Send Message</button>
-            </form>
+<!-- ====================================================== EXPERIENCE -->
+<section class="section" id="experience">
+  <div class="wrap">
+    <div class="section__head reveal">
+      <div>
+        <p class="eyebrow">Experience</p>
+        <h2>Where I've done it</h2>
+      </div>
+    </div>
+
+    <div class="timeline reveal">
+      <article class="tl-item">
+        <div class="tl-item__head">
+          <span class="tl-item__role">Data Analyst</span>
+          <span class="tl-item__org">Frantz Law Group</span>
+          <span class="tl-item__date">Mar 2026 – Jun 2026</span>
         </div>
-    </section>
+        <ul>
+          <li>Delivered data processing and reporting for legal and operational teams, fielding ad-hoc stakeholder requests and converting the recurring ones into repeatable automated outputs.</li>
+          <li>Implemented data governance processes that improved data quality, consistency, and firm-wide accessibility.</li>
+        </ul>
+      </article>
 
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="social-icons">
-                <a href="#" class="social-icon"><i class="fab fa-github"></i></a>
-                <a href="#" class="social-icon"><i class="fab fa-linkedin"></i></a>
-                <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
-                <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
-            </div>
-            <p>&copy; 2025 Your Name. All Rights Reserved.</p>
+      <article class="tl-item">
+        <div class="tl-item__head">
+          <span class="tl-item__role">Python Developer &amp; Database Administrator</span>
+          <span class="tl-item__org">Reese Law Group</span>
+          <span class="tl-item__date">Aug 2024 – Mar 2026</span>
         </div>
-    </footer>
+        <ul>
+          <li>Replaced a manual legal document process producing roughly 50 documents per week with an automated generation workflow that produces hundreds per minute.</li>
+          <li>Designed and deployed end-to-end data pipelines integrating internal systems into a unified reporting layer used by firm staff.</li>
+          <li>Developed no-code reporting applications giving admin and compliance staff direct access to firm data without engineering support.</li>
+          <li>Refactored and optimised business-critical Python automation scripts firm-wide, improving reliability and maintainability.</li>
+          <li>Administered internal databases and authored custom SQL for client and stakeholder reporting across departments.</li>
+          <li>Served as technical support for attorneys and administrative staff, resolving system and application issues.</li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
 
-    <script>
-        // Simple smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
-    </script>
+<!-- ========================================================== SKILLS -->
+<section class="section" id="skills">
+  <div class="wrap">
+    <div class="section__head reveal">
+      <div>
+        <p class="eyebrow">Toolkit</p>
+        <h2>What I build with</h2>
+      </div>
+    </div>
+
+    <div class="skill-grid reveal">
+      <div class="skill-block">
+        <h3>Languages &amp; analysis</h3>
+        <div class="chips">
+          <span class="chip chip--accent">Python</span>
+          <span class="chip chip--accent">SQL</span>
+          <span class="chip">Excel</span>
+          <span class="chip">Power BI</span>
+        </div>
+      </div>
+      <div class="skill-block">
+        <h3>Data engineering</h3>
+        <div class="chips">
+          <span class="chip chip--accent">ETL pipeline design</span>
+          <span class="chip">Apache Airflow</span>
+          <span class="chip">Snowflake</span>
+          <span class="chip">Database design</span>
+          <span class="chip">Query optimisation</span>
+        </div>
+      </div>
+      <div class="skill-block">
+        <h3>Automation &amp; AI</h3>
+        <div class="chips">
+          <span class="chip chip--accent">Workflow automation</span>
+          <span class="chip">Document generation</span>
+          <span class="chip">RAG applications</span>
+          <span class="chip">MCP server development</span>
+          <span class="chip">Multi-agent systems</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section__head reveal" style="margin-top:3.2rem">
+      <div>
+        <p class="eyebrow">Education</p>
+        <h2>Background</h2>
+      </div>
+    </div>
+    <div class="cards reveal">
+      <div class="card">
+        <p class="card__tag">2019 – 2022</p>
+        <h3>B.S. Mathematics</h3>
+        <p style="margin-bottom:0">California State University, Northridge</p>
+      </div>
+      <div class="card">
+        <p class="card__tag">2015 – 2018</p>
+        <h3>Transfer coursework</h3>
+        <p style="margin-bottom:0">Palomar College</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================================= CONTACT -->
+<section class="section" id="contact">
+  <div class="wrap">
+    <div class="contact-grid">
+      <div class="reveal">
+        <p class="eyebrow">Contact</p>
+        <h2>Let's talk</h2>
+        <p class="lede">
+          I'm looking for data engineering, automation, or analytics roles — especially
+          where operations are still running on manual process. Happy to talk through
+          anything you saw here.
+        </p>
+        <ul class="contact-list">
+          <li>
+            <a href="mailto:jamesbaierski@gmail.com">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg>
+              jamesbaierski@gmail.com
+            </a>
+          </li>
+          <li>
+            <a href="tel:+17608030266">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.8a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.8 2Z"/></svg>
+              (760) 803-0266
+            </a>
+          </li>
+          <li>
+            <a href="https://www.linkedin.com/in/jbaierski" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3V9Zm7 0h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.35c0-1.28-.02-2.92-1.78-2.92-1.78 0-2.05 1.39-2.05 2.83V21h-4V9Z"/></svg>
+              LinkedIn
+            </a>
+          </li>
+          <li>
+            <a href="https://github.com/JamesBaierski" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a12 12 0 0 0-3.79 23.4c.6.1.82-.26.82-.58v-2.2c-3.34.73-4.04-1.4-4.04-1.4-.55-1.4-1.34-1.77-1.34-1.77-1.09-.75.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .1-.78.42-1.3.76-1.6-2.67-.3-5.47-1.34-5.47-5.96 0-1.32.47-2.4 1.24-3.24-.12-.3-.54-1.53.12-3.19 0 0 1.01-.32 3.3 1.24a11.4 11.4 0 0 1 6 0c2.29-1.56 3.3-1.24 3.3-1.24.66 1.66.24 2.89.12 3.19.77.84 1.24 1.92 1.24 3.24 0 4.63-2.81 5.65-5.49 5.95.43.38.82 1.1.82 2.22v3.29c0 .32.21.7.83.58A12 12 0 0 0 12 .5Z"/></svg>
+              GitHub
+            </a>
+          </li>
+          <li>
+            <button type="button" data-copy-email>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <span data-copy-label>Copy email address</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <form class="form reveal" id="contact-form" method="POST" action="mailto:jamesbaierski@gmail.com">
+        <div class="field">
+          <label for="cf-name">Name</label>
+          <input id="cf-name" name="name" type="text" required autocomplete="name" placeholder="Your name">
+        </div>
+        <div class="field">
+          <label for="cf-email">Email</label>
+          <input id="cf-email" name="email" type="email" required autocomplete="email" placeholder="you@company.com">
+        </div>
+        <div class="field field--hp" aria-hidden="true">
+          <label for="cf-gotcha">Leave this empty</label>
+          <input id="cf-gotcha" name="_gotcha" type="text" tabindex="-1" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="cf-message">Message</label>
+          <textarea id="cf-message" name="message" required placeholder="What are you working on?"></textarea>
+        </div>
+        <button class="btn btn--primary" type="submit" style="width:100%">Send message</button>
+        <p class="form__status" role="status" aria-live="polite"></p>
+        <p class="form__note">Prefer email? <a href="mailto:jamesbaierski@gmail.com">jamesbaierski@gmail.com</a></p>
+      </form>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer__inner">
+    <span>© <span data-year>2026</span> James Baierski</span>
+    <span>Built with plain HTML, CSS and JavaScript · <a href="https://github.com/JamesBaierski" target="_blank" rel="noopener">Source on GitHub</a></span>
+  </div>
+</footer>
+
+<script src="assets/js/main.js"></script>
 </body>
 </html>

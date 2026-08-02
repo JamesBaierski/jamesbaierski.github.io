@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://jamesbaierski.github.io/sitemap.xml
