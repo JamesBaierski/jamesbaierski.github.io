@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  REVIEW BEFORE PUBLISHING
+  Grounded in your résumé bullets (end-to-end pipelines into a unified reporting
+  layer; no-code reporting for admin and compliance staff). The architecture
+  narrative is a plausible reconstruction — correct anything that's off.
+  ============================================================================
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unified Reporting Platform — James Baierski</title>
+<meta name="description" content="Case study: integrating siloed internal systems into a single reporting layer with scheduled pipelines, and giving non-technical staff self-serve access to firm data.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23080b11'/><text x='50' y='68' font-family='monospace' font-size='54' font-weight='bold' fill='%234cc2ff' text-anchor='middle'>JB</text></svg>">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="nav">
+  <div class="wrap nav__inner">
+    <a class="nav__brand" href="../index.html"><span class="dot" aria-hidden="true"></span>James Baierski</a>
+    <button class="nav__toggle" type="button" aria-label="Toggle navigation" aria-expanded="false">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <nav class="nav__links" aria-label="Primary">
+      <a href="../index.html#work">Work</a>
+      <a href="../index.html#experience">Experience</a>
+      <a href="../index.html#skills">Skills</a>
+      <a href="../index.html#contact">Contact</a>
+      <a class="btn btn--sm btn--primary" href="../assets/files/James_Baierski_Resume.pdf" download>Résumé</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<section class="case-hero">
+  <div class="wrap">
+    <a class="back-link" href="../index.html#work">← All work</a>
+    <p class="eyebrow">Case study · Data engineering</p>
+    <h1>Unified Reporting Platform</h1>
+    <p class="lede">
+      Firm data lived in several systems that didn't talk to each other, and every question
+      about it became an engineering request. I built the pipelines to bring those systems
+      into one reporting layer — then made that layer self-serve.
+    </p>
+    <dl class="case-meta">
+      <div><dt>Context</dt><dd>Reese Law Group</dd></div>
+      <div><dt>Role</dt><dd>Pipeline design, DBA, reporting</dd></div>
+      <div><dt>Stack</dt><dd>Python · SQL · Airflow · Snowflake · Power BI</dd></div>
+      <div><dt>Outcome</dt><dd>Self-serve reporting, no engineer in the loop</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap prose">
+
+    <h2>The problem</h2>
+    <p>
+      Ask a simple operational question — how many matters are at a given stage, how a
+      department's volume is trending — and answering it meant opening three systems,
+      exporting from each, and reconciling them in Excel. Every answer was a one-off.
+      Two people asking the same question a week apart could get two different numbers.
+    </p>
+    <p>The bottleneck wasn't the reporting. It was that every report started from scratch.</p>
+
+    <h2>The approach</h2>
+
+    <h3>1. Land the data once, centrally</h3>
+    <p>
+      Scheduled pipelines extract from each internal source on a fixed cadence and land it
+      in a central warehouse. From that point on, every report reads from one place. The
+      arguing-about-whose-export-is-right problem disappears when there's only one export.
+    </p>
+
+    <h3>2. Model it for the questions people actually ask</h3>
+    <p>
+      Raw operational schemas are shaped for transactions, not analysis. A modelling layer
+      sits on top: cleaned, conformed tables with the business definitions baked in, so
+      "open matter" means the same thing in every report that uses it.
+    </p>
+
+    <h3>3. Schedule and monitor, don't babysit</h3>
+    <p>
+      Orchestration handles dependencies and retries, and a failed load announces itself
+      rather than quietly serving yesterday's numbers. A stale dashboard nobody knows is
+      stale is worse than no dashboard.
+    </p>
+
+    <h3>4. Hand over the keys</h3>
+    <p>
+      The last step is the one that actually removed the bottleneck: no-code reporting
+      applications on top of the modelled layer, so admin and compliance staff could
+      filter, slice, and pull what they needed without an engineering ticket.
+    </p>
+
+    <div class="flow">
+<span class="c"># architecture</span>
+
+  <span class="n">Case mgmt</span>   <span class="n">Finance</span>   <span class="n">Ops systems</span>
+      │           │            │
+      └───────────┴────────────┘
+                  │  <span class="c">scheduled extract (Airflow DAGs)</span>
+                  ▼
+        <span class="n">Warehouse — raw layer</span>       <span class="c">as-landed, immutable</span>
+                  │  <span class="c">transform + conform</span>
+                  ▼
+        <span class="n">Modelled layer</span>              <span class="c">business definitions, one source of truth</span>
+                  │
+        ┌─────────┴──────────┐
+        ▼                    ▼
+  <span class="n">Power BI</span>            <span class="n">No-code reporting apps</span>
+  <span class="c">exec + trend views</span>    <span class="c">admin &amp; compliance self-serve</span>
+    </div>
+
+    <h2>Engineering decisions worth calling out</h2>
+    <ul>
+      <li><strong>Raw layer stays immutable.</strong> Land it as it arrived, transform downstream. When a definition changes you rebuild from raw instead of re-extracting from production systems.</li>
+      <li><strong>Definitions live in the model, not in each report.</strong> Otherwise every dashboard slowly grows its own private version of the truth.</li>
+      <li><strong>Self-serve beats more dashboards.</strong> Building the twentieth dashboard is a treadmill; giving people a safe way to answer their own questions gets you off it.</li>
+      <li><strong>Query optimisation as a habit.</strong> Reports people wait on are reports people stop using. Indexing and query shape got attention early, not after complaints.</li>
+    </ul>
+
+    <h3>Data governance</h3>
+    <p>
+      Later, at Frantz Law Group, the same instinct showed up as explicit governance work:
+      documenting definitions, tightening quality checks at ingestion, and making data
+      discoverable firm-wide. Consistency is a feature — it's what lets someone trust a
+      number they didn't produce themselves.
+    </p>
+
+    <div class="callout">
+      <p>
+        The measure of success here isn't dashboard count. It's how many questions get
+        answered without anyone asking an engineer.
+      </p>
+    </div>
+
+    <h2>Results</h2>
+    <ul class="results">
+      <li><span class="mark">▸</span><span>Siloed internal systems consolidated into <strong>one reporting layer</strong> used across the firm.</span></li>
+      <li><span class="mark">▸</span><span>Admin and compliance staff got <strong>direct, self-serve access</strong> to firm data with no engineering support.</span></li>
+      <li><span class="mark">▸</span><span>Recurring ad-hoc requests were converted into <strong>scheduled, repeatable outputs</strong>.</span></li>
+      <li><span class="mark">▸</span><span>Governance processes improved data quality, consistency, and accessibility firm-wide.</span></li>
+    </ul>
+
+    <h2>What I'd do differently</h2>
+    <p>
+      I'd write the data contract with each source system earlier. Most pipeline breakages
+      weren't logic bugs — they were an upstream column quietly changing type or meaning.
+      Explicit expectations at the boundary, checked on every load, would have turned those
+      from mysteries into alerts.
+    </p>
+
+    <nav class="next-nav">
+      <a class="btn btn--ghost" href="document-automation.html">← Document Generation Engine</a>
+      <a class="btn" href="legal-rag-assistant.html">Next: Legal Knowledge Assistant →</a>
+    </nav>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer__inner">
+    <span>© <span data-year>2026</span> James Baierski</span>
+    <span><a href="mailto:jamesbaierski@gmail.com">jamesbaierski@gmail.com</a></span>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

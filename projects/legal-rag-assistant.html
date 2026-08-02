@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  REVIEW BEFORE PUBLISHING
+  Grounded in your résumé's "RAG application in Python using vector search to
+  retrieve and summarize legal information from firm documents". Model choices,
+  chunking strategy and evaluation detail below are a plausible reconstruction —
+  swap in what you actually used.
+  ============================================================================
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Legal Knowledge Assistant (RAG) — James Baierski</title>
+<meta name="description" content="Case study: a retrieval-augmented generation application over firm legal documents — vector search for retrieval, LLM summarisation, and citations back to source.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23080b11'/><text x='50' y='68' font-family='monospace' font-size='54' font-weight='bold' fill='%234cc2ff' text-anchor='middle'>JB</text></svg>">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="nav">
+  <div class="wrap nav__inner">
+    <a class="nav__brand" href="../index.html"><span class="dot" aria-hidden="true"></span>James Baierski</a>
+    <button class="nav__toggle" type="button" aria-label="Toggle navigation" aria-expanded="false">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <nav class="nav__links" aria-label="Primary">
+      <a href="../index.html#work">Work</a>
+      <a href="../index.html#experience">Experience</a>
+      <a href="../index.html#skills">Skills</a>
+      <a href="../index.html#contact">Contact</a>
+      <a class="btn btn--sm btn--primary" href="../assets/files/James_Baierski_Resume.pdf" download>Résumé</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<section class="case-hero">
+  <div class="wrap">
+    <a class="back-link" href="../index.html#work">← All work</a>
+    <p class="eyebrow">Case study · Applied AI</p>
+    <h1>Legal Knowledge Assistant</h1>
+    <p class="lede">
+      Firm knowledge sits in thousands of documents that nobody has time to read. This is a
+      retrieval-augmented application that finds the relevant passages, summarises them, and
+      cites where every claim came from — so the answer can be checked, not just trusted.
+    </p>
+    <dl class="case-meta">
+      <div><dt>Type</dt><dd>Applied AI / internal tool</dd></div>
+      <div><dt>Role</dt><dd>Design &amp; implementation</dd></div>
+      <div><dt>Stack</dt><dd>Python · embeddings · vector search · LLM</dd></div>
+      <div><dt>Principle</dt><dd>Citations, not confidence</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap prose">
+
+    <h2>The problem</h2>
+    <p>
+      Keyword search over a legal document store fails in a specific way: it matches words,
+      but people ask about <em>concepts</em>. Someone searching for how a particular clause has been
+      handled doesn't know which of five phrasings the drafters used. So the document that
+      answers the question sits there, unfound, and the question gets re-answered from scratch.
+    </p>
+
+    <h2>Why RAG rather than a fine-tuned model</h2>
+    <p>
+      In a legal setting the requirement isn't fluency, it's <strong>attribution</strong>. A model that
+      has absorbed the documents into its weights produces answers you cannot audit. Retrieval
+      keeps the source visible: the system shows you the passages it used, and the summary is
+      explicitly a summary <em>of those passages</em>. If the retrieval is wrong, that's visible too.
+    </p>
+    <p>It also means the corpus can change without retraining anything — new documents are just indexed.</p>
+
+    <h2>How it works</h2>
+
+    <h3>1. Ingestion and chunking</h3>
+    <p>
+      Documents are parsed and split into passages sized for retrieval, with overlap so a
+      definition doesn't get severed from the sentence that uses it. Chunking on structural
+      boundaries — sections and clauses rather than a fixed character count — keeps passages
+      semantically whole. Each chunk carries metadata back to its document and location.
+    </p>
+
+    <h3>2. Embedding and indexing</h3>
+    <p>
+      Each passage is embedded into a vector and stored in a vector index. Semantically close
+      passages end up close in that space, which is what lets a question phrased one way find
+      a passage phrased another.
+    </p>
+
+    <h3>3. Retrieval</h3>
+    <p>
+      A query is embedded the same way, and the nearest passages are pulled back. Metadata
+      filters narrow the search when the user already knows the scope. Retrieving a handful of
+      strong passages beats retrieving many mediocre ones — precision at the top of the list is
+      what determines answer quality.
+    </p>
+
+    <h3>4. Grounded generation</h3>
+    <p>
+      Retrieved passages go to the model as context with a strict instruction: answer from
+      these passages, cite them, and say so when they don't contain the answer. "I don't have
+      that" is a correct response, and the system is built to prefer it over a plausible guess.
+    </p>
+
+    <div class="flow">
+<span class="c"># retrieval-augmented pipeline</span>
+
+  <span class="n">Firm documents</span>
+        │  <span class="c">parse → chunk on structure → attach metadata</span>
+        ▼
+  <span class="n">Embeddings</span> ──────► <span class="n">Vector index</span>
+                              ▲
+  <span class="n">User question</span> ──► embed ──┘
+        │
+        ▼
+  <span class="n">Top-k passages</span>          <span class="c">+ source metadata</span>
+        │
+        ▼
+  <span class="n">LLM, grounded prompt</span>    <span class="c">answer only from context; cite; abstain if absent</span>
+        │
+        ▼
+  <span class="n">Answer + citations</span>      <span class="c">every claim traceable to a document</span>
+    </div>
+
+    <h2>Engineering decisions worth calling out</h2>
+    <ul>
+      <li><strong>Abstention is a feature.</strong> In legal work a confident wrong answer is the expensive failure mode. The prompt and the UI both make "not in these documents" a first-class outcome.</li>
+      <li><strong>Citations are mandatory, not decorative.</strong> Every response links to the passages behind it. That turns the tool from something you have to trust into something you can verify in ten seconds.</li>
+      <li><strong>Chunk on meaning, not on length.</strong> Most bad RAG answers are bad retrieval wearing a good answer's clothes. Chunking strategy moved quality more than any prompt change.</li>
+      <li><strong>Evaluate with real questions.</strong> A fixed set of questions with known-correct source documents makes retrieval quality measurable, so changes can be judged instead of vibed.</li>
+    </ul>
+
+    <div class="callout">
+      <p>
+        The right mental model isn't "AI that knows the law." It's a very good research
+        assistant that always shows its sources and is comfortable saying it didn't find anything.
+      </p>
+    </div>
+
+    <h2>Results</h2>
+    <ul class="results">
+      <li><span class="mark">▸</span><span>Concept-level search across firm documents, rather than exact-keyword matching.</span></li>
+      <li><span class="mark">▸</span><span>Answers arrive <strong>with citations</strong>, so verification takes seconds instead of a re-read.</span></li>
+      <li><span class="mark">▸</span><span>New documents are indexed, not retrained — the corpus stays current by default.</span></li>
+    </ul>
+
+    <h2>Where I'd take it next</h2>
+    <p>
+      Hybrid retrieval is the clearest win: combining vector similarity with keyword search
+      catches the cases where an exact term — a statute number, a party name — matters more
+      than semantic closeness. Beyond that, a reranking pass over retrieved candidates, and
+      per-document access controls enforced at retrieval time so the assistant can never
+      surface a passage the asker isn't cleared to read.
+    </p>
+
+    <nav class="next-nav">
+      <a class="btn btn--ghost" href="reporting-platform.html">← Unified Reporting Platform</a>
+      <a class="btn" href="../index.html#contact">Get in touch →</a>
+    </nav>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer__inner">
+    <span>© <span data-year>2026</span> James Baierski</span>
+    <span><a href="mailto:jamesbaierski@gmail.com">jamesbaierski@gmail.com</a></span>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

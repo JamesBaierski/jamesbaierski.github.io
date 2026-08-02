@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  REVIEW BEFORE PUBLISHING
+  The headline facts here come straight from your résumé (~50 docs/week manual
+  → hundreds per minute automated). The architecture and implementation detail
+  below is written as a plausible reconstruction — read it through and correct
+  anything that doesn't match what you actually built.
+  ============================================================================
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Legal Document Generation Engine — James Baierski</title>
+<meta name="description" content="Case study: replacing a manual legal drafting process producing ~50 documents per week with a templated Python pipeline generating hundreds per minute.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23080b11'/><text x='50' y='68' font-family='monospace' font-size='54' font-weight='bold' fill='%234cc2ff' text-anchor='middle'>JB</text></svg>">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="nav">
+  <div class="wrap nav__inner">
+    <a class="nav__brand" href="../index.html"><span class="dot" aria-hidden="true"></span>James Baierski</a>
+    <button class="nav__toggle" type="button" aria-label="Toggle navigation" aria-expanded="false">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <nav class="nav__links" aria-label="Primary">
+      <a href="../index.html#work">Work</a>
+      <a href="../index.html#experience">Experience</a>
+      <a href="../index.html#skills">Skills</a>
+      <a href="../index.html#contact">Contact</a>
+      <a class="btn btn--sm btn--primary" href="../assets/files/James_Baierski_Resume.pdf" download>Résumé</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<section class="case-hero">
+  <div class="wrap">
+    <a class="back-link" href="../index.html#work">← All work</a>
+    <p class="eyebrow">Case study · Automation</p>
+    <h1>Legal Document Generation Engine</h1>
+    <p class="lede">
+      A drafting process that consumed staff hours every week, rebuilt as a data-driven
+      pipeline. Roughly 50 documents a week by hand became hundreds per minute, generated
+      from the system of record with consistent formatting.
+    </p>
+    <dl class="case-meta">
+      <div><dt>Context</dt><dd>Reese Law Group</dd></div>
+      <div><dt>Role</dt><dd>Python developer &amp; DBA</dd></div>
+      <div><dt>Stack</dt><dd>Python · SQL · docx templating</dd></div>
+      <div><dt>Outcome</dt><dd>~50/week → hundreds/minute</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap prose">
+
+    <h2>The problem</h2>
+    <p>
+      Legal documents at the firm were assembled by hand. A staff member opened a template,
+      looked up the matter details in the case management system, typed or pasted them in
+      field by field, saved the file under a naming convention held mostly in people's heads,
+      and moved on to the next one. Throughput topped out around <strong>50 documents a week</strong>.
+    </p>
+    <p>Three costs came with that:</p>
+    <ul>
+      <li><strong>Time.</strong> Hours of skilled staff time spent on transcription rather than legal work.</li>
+      <li><strong>Consistency.</strong> Small divergences crept in — a stale template here, a mistyped party name there — and those errors surface at exactly the wrong moment.</li>
+      <li><strong>Ceiling.</strong> Volume could only grow by adding people. There was no way to absorb a surge.</li>
+    </ul>
+
+    <h2>The approach</h2>
+    <p>
+      The insight is that these documents aren't really documents while they're being made —
+      they're a <strong>join between a template and a row of data</strong>. Once you model it that
+      way, generation becomes a batch job rather than a task.
+    </p>
+
+    <h3>1. Separate content from layout</h3>
+    <p>
+      Every recurring document type was converted into a parameterised template: fixed legal
+      language stays put, everything variable becomes a named placeholder. That made the
+      templates reviewable by the people who own the language, independent of any code.
+    </p>
+
+    <h3>2. Pull the data from the source of truth</h3>
+    <p>
+      Rather than re-keying, the engine queries the firm's databases directly for the matter,
+      party, and case fields each template needs. One SQL layer feeds every document type,
+      so a correction to the underlying data flows into everything downstream.
+    </p>
+
+    <h3>3. Validate before rendering, not after</h3>
+    <p>
+      Every record is checked against the template's required fields before anything is
+      written. Missing or malformed data is reported as an exception list rather than
+      silently producing a document with a blank where a name should be.
+    </p>
+
+    <h3>4. Render, name, and file automatically</h3>
+    <p>
+      Output filenames and destination folders are derived from the record itself, so the
+      naming convention is enforced by construction rather than by memory.
+    </p>
+
+    <div class="flow">
+<span class="c"># pipeline</span>
+
+  <span class="n">Case management DB</span>
+        │
+        ▼
+  <span class="n">SQL extraction layer</span>   <span class="c">— one query set per document type</span>
+        │
+        ▼
+  <span class="n">Validation</span>              <span class="c">— required fields, formats, dates</span>
+        │            └──► exception report  <span class="c">(nothing silently wrong)</span>
+        ▼
+  <span class="n">Template engine</span>         <span class="c">— placeholders → values, batch render</span>
+        │
+        ▼
+  <span class="n">Naming + filing</span>          <span class="c">— convention applied automatically</span>
+        │
+        ▼
+  <span class="n">Run log</span>                 <span class="c">— what was produced, from which records</span>
+    </div>
+
+    <h2>Engineering decisions worth calling out</h2>
+    <ul>
+      <li><strong>Batch-first, not one-at-a-time.</strong> Generating a thousand documents costs barely more than generating one, because the expensive part — the query and the template parse — happens once.</li>
+      <li><strong>Templates owned by non-engineers.</strong> Legal language changes far more often than code does. Anyone who can edit a document can update a template; no deploy required.</li>
+      <li><strong>Fail loudly on data, quietly on nothing.</strong> An automation that produces subtly wrong legal documents is worse than one that stops. Validation gates come before rendering.</li>
+      <li><strong>Reproducible runs.</strong> Every batch logs its inputs, so any document can be traced back to the records it came from.</li>
+    </ul>
+
+    <div class="callout">
+      <p>
+        The unlock wasn't speed for its own sake. It was that document volume stopped being
+        a staffing question. Work that had to be scheduled around headcount could now be run
+        on demand.
+      </p>
+    </div>
+
+    <h2>Results</h2>
+    <ul class="results">
+      <li><span class="mark">▸</span><span>Throughput moved from roughly <strong>50 documents per week</strong> to <strong>hundreds per minute</strong>.</span></li>
+      <li><span class="mark">▸</span><span>Formatting and naming became uniform by construction rather than by discipline.</span></li>
+      <li><span class="mark">▸</span><span>Data problems surfaced as an actionable exception list instead of as defects inside finished documents.</span></li>
+      <li><span class="mark">▸</span><span>Staff time shifted from transcription to review — the part that actually needs a person.</span></li>
+    </ul>
+
+    <h2>What I'd do differently</h2>
+    <p>
+      The first version treated each document type as its own script. Consolidating them
+      behind one template registry came later, and should have come first — most of the
+      early maintenance cost was the same fix applied in several places. I'd also invest in
+      a golden-file test suite earlier: a handful of known records with known correct output,
+      diffed on every change, catches template regressions faster than any manual review.
+    </p>
+
+    <nav class="next-nav">
+      <a class="btn btn--ghost" href="../index.html#work">← All work</a>
+      <a class="btn" href="reporting-platform.html">Next: Unified Reporting Platform →</a>
+    </nav>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer__inner">
+    <span>© <span data-year>2026</span> James Baierski</span>
+    <span><a href="mailto:jamesbaierski@gmail.com">jamesbaierski@gmail.com</a></span>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
