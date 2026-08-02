@@ -28,8 +28,16 @@ Personal portfolio site. Plain HTML, CSS and JavaScript — no build step, no de
 - [x] **GitHub username** — `JamesBaierski`, wired into every link, the canonical URL, and the sitemap.
 - [x] **LinkedIn** — https://www.linkedin.com/in/jbaierski/
 - [ ] **Contact form.** Open `assets/js/main.js` and set `FORM_ENDPOINT` (see below).
-      Until you do, the form falls back to opening the visitor's email client — which works,
-      but loses you the message if they close the tab.
+      Until you do, the form renders disabled and points visitors at LinkedIn. It deliberately
+      does *not* fall back to a `mailto:` link, because that would put an email address back
+      into the page source.
+
+### Contact-detail policy
+
+No email address or phone number appears anywhere in this repo — not in the HTML, not in the
+JSON-LD, and not in the résumé PDF (the contact line was redacted, leaving name and location).
+LinkedIn is the only route in. If you add contact details back, remember the PDF is a public
+download and is indexed like any other file.
 - [ ] **Read the case studies.** Each of the three files in `projects/` starts with an HTML
       comment flagging which details are reconstructed rather than taken verbatim from your
       résumé. Correct anything that doesn't match what you actually built before this is public.
