@@ -342,6 +342,17 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 3rem 0; }
 .field textarea { resize: vertical; min-height: 128px; }
 .field--hp { position: absolute; left: -9999px; opacity: 0; }
 .form__note { font-size: .8rem; color: var(--text-dim); margin: 12px 0 0; }
+
+/* Form with no endpoint wired up yet — visibly inert, not broken. */
+.form[data-inactive="true"] .field { opacity: .45; }
+.form[data-inactive="true"] input,
+.form[data-inactive="true"] textarea,
+.form[data-inactive="true"] button { cursor: not-allowed; }
+.form[data-inactive="true"] button[type="submit"] {
+  background: var(--surface-2); color: var(--text-dim);
+  border-color: var(--border); box-shadow: none; opacity: .7;
+}
+.form[data-inactive="true"] .form__note { color: var(--text-muted); font-size: .87rem; }
 .form__status { font-size: .9rem; margin: 14px 0 0; display: none; }
 .form__status.is-ok { display: block; color: var(--accent-2); }
 .form__status.is-err { display: block; color: #ff8f8f; }
